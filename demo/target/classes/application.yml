@@ -1,0 +1,46 @@
+server:
+  port: 8081
+spring:
+  main:
+    allow-circular-references: true
+
+  security:
+    saml2:
+      relyingparty:
+        registration:
+          adfs:  # This registration name should match your application's SAML registration name
+            identityprovider:
+              entity-id: http://localhost:8080/realms/test-zig
+              verification.credentials:
+                - certificate-location: "classpath:saml-idp.crt"
+            singlesignon.url: http://localhost:8080/realms/test-zig/protocol/saml
+            singlesignon.sign-request: false
+
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/test-zig
+        registration:
+          keycloak:
+            client-id: xpns-test
+            client-secret: your-client-secret
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/travel-ems
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+keycloak:
+  realm: test-zig         # Replace with your Keycloak realm name
+  resource: xpns-test   # Replace with your Keycloak client ID
+  auth-server-url: http://localhost:8080/realms/test-zig/protocol/openid-connect/token
+  credentials:
+    secret: zaggle@123 # Replace with your Keycloak client secret
+  ssl-required: external
+
